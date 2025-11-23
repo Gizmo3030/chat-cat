@@ -45,27 +45,27 @@ export const CLASSIFICATION_OPTIONS: ClassificationOption[] = [
 
 export const TOOL_CATALOG: ToolCatalogItem[] = [
   {
-    name: "filesystem",
+    name: "Filesystem",
     description: "Read, edit, or create project files and assets.",
     mcpServer: "filesystem",
   },
   {
-    name: "git",
+    name: "Git",
     description: "Inspect history, branches, or staged changes.",
     mcpServer: "git",
   },
   {
-    name: "terminal",
+    name: "Terminal",
     description: "Run builds, tests, or framework CLIs via shell commands.",
     mcpServer: "shell",
   },
   {
-    name: "web-search",
+    name: "Web-search",
     description: "Look up documentation or external references.",
     mcpServer: "search",
   },
   {
-    name: "browser",
+    name: "Browser",
     description: "Preview running apps or visit remote dashboards.",
     mcpServer: "browser",
   },
