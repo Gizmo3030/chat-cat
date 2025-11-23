@@ -17,7 +17,7 @@ const bodySchema = z.object({
     .min(1),
 });
 
-const DEFAULT_BASE_URL = "https://www.ollama.gizmosdomain.com";
+const DEFAULT_BASE_URL = "http://localhost:11434";
 const DEFAULT_MODEL = "Gemma3";
 
 function getBaseUrl() {
