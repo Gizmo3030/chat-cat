@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chat Classification Copilot
 
-## Getting Started
+A Next.js 16 + Tailwind 4 workspace styled after the shadcn.ai chat experience. Each message is sent to your Ollama instance (Gemma3 by default) and returns three artifacts: the assistant reply, a conversation label with summary + confidence, and suggested MCP tools/servers to continue the work.
 
-First, run the development server:
+## Requirements
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18.18+ (or 20+)
+- npm 10+
+- An accessible Ollama endpoint running the `Gemma3` model (adjust the `.env` values if you host elsewhere)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Copy the environment template and supply your values:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+       cp .env.example .env.local
 
-## Learn More
+   | Variable | Description |
+   | --- | --- |
+   | `OLLAMA_BASE_URL` | Base URL for the Ollama REST API (e.g., `http://localhost:11434`). |
+   | `OLLAMA_MODEL` | Model identifier to query. Defaults to `Gemma3`. |
+   | `NEXT_PUBLIC_MODEL_LABEL` | Optional friendly label that shows up in the UI header. |
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+       npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Start the dev server and open `http://localhost:3000`:
 
-## Deploy on Vercel
+       npm run dev
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How it works
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/api/chat/route.ts` posts the entire chat transcript to Ollama, enforcing a JSON-only response that includes `assistantReply`, `classification`, and `recommendedTools`.
+- `lib/classification-config.ts` centralizes the allowed labels/descriptions and the MCP/tool catalog so both the LLM prompt and the UI stay in sync.
+- `components/chat-panel.tsx` renders the chat stream, the classification highlight, and the live tool recommendations in a shadcn-style layout.
+
+## Customizing
+
+- Change the label set or tool registry by editing `CLASSIFICATION_OPTIONS` and `TOOL_CATALOG` inside `lib/classification-config.ts`.
+- Point at a different model or endpoint by tweaking `OLLAMA_MODEL`, `OLLAMA_BASE_URL`, and `NEXT_PUBLIC_MODEL_LABEL` in `.env.local` (restart `npm run dev` after editing env vars).
+
+## Scripts
+
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server with hot reload. |
+| `npm run build` | Produce an optimized production build. |
+| `npm run start` | Serve the production build locally. |
+| `npm run lint` | Run ESLint using the Next.js config. |
+
+## Troubleshooting
+
+- **No classification returned** – ensure the Ollama endpoint is reachable and `Gemma3` is pulled (`ollama pull gemma3`).
+- **500 from `/api/chat`** – check the terminal for the exact error (TLS, DNS, auth, etc.).
+- **Tool suggestions feel off** – refine the descriptions in `lib/classification-config.ts` so the prompt has clearer guidance.
+
